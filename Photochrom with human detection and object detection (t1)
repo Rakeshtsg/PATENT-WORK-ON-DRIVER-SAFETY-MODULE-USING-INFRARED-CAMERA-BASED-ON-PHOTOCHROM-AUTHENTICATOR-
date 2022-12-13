@@ -1,0 +1,23 @@
+# Import necessary libraries
+import cv2
+import tensorflow as tf
+
+# Load the trained model
+model = tf.keras.models.load_model('human_object_detection_model.h5')
+
+# Read the input image
+image = cv2.imread('input_image.jpg')
+
+# Convert the image to grayscale
+gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Use the trained model to detect humans and objects in the grayscale image
+detections = model.predict(gray_image)
+
+# For each detected human and object, draw a bounding box around them in the original image
+for detection in detections:
+  x1, y1, x2, y2 = detection['box']
+  cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+
+# Save the resulting image with bounding boxes as the output
+cv2.imwrite('output_image.jpg', image)
