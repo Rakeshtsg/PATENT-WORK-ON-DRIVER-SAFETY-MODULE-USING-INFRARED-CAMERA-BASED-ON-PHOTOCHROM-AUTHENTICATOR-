@@ -1,0 +1,26 @@
+# Import the necessary libraries
+import cv2
+import numpy as np
+
+# Load the input image
+image = cv2.imread('input.jpg')
+
+# Convert the image to grayscale
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Invert the grayscale image to create a negative
+negative = 255 - gray
+
+# Use the Haar cascade classifier to detect human faces in the image
+classifier = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+faces = classifier.detectMultiScale(gray, 1.3, 5)
+
+# Loop through the detected faces and draw a rectangle around them
+for (x,y,w,h) in faces:
+    cv2.rectangle(image, (x,y), (x+w, y+h), (0,255,0), 2)
+
+# Blend the grayscale and negative images using the color dodge blending mode
+result = cv2.divide(gray, 255 - negative, scale=256)
+
+# Save the output image
+cv2.imwrite('output.jpg', result)
